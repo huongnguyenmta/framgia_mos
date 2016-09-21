@@ -1,0 +1,57 @@
+<tr class="record">
+  <td>
+    <%= truncate confession.content,
+      length: Settings.admin.confessions.length_read_more %>
+    <%= link_to t(".read_more"), edit_admin_confession_path(confession) %>
+  </td>
+  <td>
+    <%= confession.created_at.strftime(Settings.admin.format_date_time) %>
+  </td>
+  <td>
+    <% if confession.waiting? %>
+      <a data-toggle="tooltip" class="tooltipLink"
+        title="<%= confession.status %>">
+        <i class="fa fa-spinner"></i>
+      </a>
+    <% elsif confession.accepted? %>
+      <a data-toggle="tooltip" class="tooltipLink"
+        title="<%= confession.status %>">
+        <i class="fa fa-check"></i>
+      </a>
+    <% end %>
+  </td>
+  <td>
+    <ul class="menu-action">
+      <% if confession.waiting? %>
+        <li>
+          <%= simple_form_for [:admin, confession] do |f| %>
+            <%= f.hidden_field :status, value: :accepted %>
+            <%= button_tag(type: "submit", class: "btn-action",
+              title: t(".tooltip_accept")) do %>
+              <span class="glyphicon glyphicon-check"></span>
+            <% end %>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to [:admin, confession], method: :delete,
+            data: {confirm: t(".delete_confirm")}, title: t(".tooltip_delete") do %>
+            <span class="glyphicon glyphicon-trash"></span>
+          <% end %>
+        </li>
+      <% elsif confession.accepted? %>
+        <li>
+          <%= link_to [:admin, confession], method: :delete,
+            data: {confirm: t(".delete_confirm")}, title: t(".tooltip_delete") do %>
+            <span class="glyphicon glyphicon-trash"></span>
+          <% end %>
+        </li>
+      <% else %>
+        <span><%= t ".none" %></span>
+      <% end %>
+    </ul>
+  </td>
+  <td>
+    <%= check_box_tag "confession_ids[]", confession.id, false,
+      class: "checkSingle" %>
+  </td>
+</tr>

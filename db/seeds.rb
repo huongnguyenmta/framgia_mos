@@ -46,4 +46,6 @@ Category.create!(name: "Tin tuc",
     image: "xe_dap")
 end
 
-
+(1..10).each do |cfs_id|
+  Confession.create(content: "Confession #{cfs_id} abc abc abc...")
+end
